@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FX Trade Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="logo"><span class="logo-fx">FX</span>CHECKER</span>
+      <span class="clock" id="clock">--:--:--</span>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ステータスカード -->
+    <div class="status-card" id="statusCard">
+      <div class="status-icon">
+        <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <svg class="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </div>
+      <div class="status-body">
+        <div class="status-label" id="statusLabel">条件を確認中</div>
+        <div class="status-sub" id="statusSub">チェックリストをすべて確認してください</div>
+      </div>
+      <div class="status-counter">
+        <span id="counterVal">0</span><span class="sep">/</span><span>9</span>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 3×3 チェックグリッド -->
+    <div class="grid">
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">01</span>
+          <span class="cell-text">冷静で正常なメンタルである</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">02</span>
+          <span class="cell-text">リベンジトレードではない</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">03</span>
+          <span class="cell-text">許容損失額以内である</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">04</span>
+          <span class="cell-text">売買方向トレンド確認</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">05</span>
+          <span class="cell-text">経済指標ボラティリティ確認</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">06</span>
+          <span class="cell-text">サポレジラインが機能している</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">07</span>
+          <span class="cell-text">5分足RCIベスポジ</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">08</span>
+          <span class="cell-text">1分足ENT条件合致</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+      <label class="cell">
+        <input type="checkbox" class="cb" />
+        <div class="cell-body">
+          <span class="cell-num">09</span>
+          <span class="cell-text">優位性確立まで待つ！</span>
+          <span class="cell-mark">✓</span>
+        </div>
+      </label>
+
+    </div>
+
+    <!-- リセットボタン -->
+    <button class="reset-btn" id="resetBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <path d="M3.51 15a9 9 0 1 0 .49-3.64"></path>
+      </svg>
+      チェックをリセット
+    </button>
+
+  </main>
+
+  <script>
+    // 時計
+    function tick() {
+      const d = new Date();
+      document.getElementById('clock').textContent =
+        [d.getHours(), d.getMinutes(), d.getSeconds()]
+          .map(n => String(n).padStart(2, '0')).join(':');
+    }
+    setInterval(tick, 1000);
+    tick();
+
+    // チェック状態管理
+    const inputs = document.querySelectorAll('.cb');
+    const TOTAL = inputs.length;
+
+    function update() {
+      const checked = [...inputs].filter(i => i.checked).length;
+      const pct = (checked / TOTAL) * 100;
+
+      document.getElementById('counterVal').textContent = checked;
+      document.getElementById('progressBar').style.width = pct + '%';
+
+      const card = document.getElementById('statusCard');
+      const label = document.getElementById('statusLabel');
+      const sub = document.getElementById('statusSub');
+
+      card.className = 'status-card';
+      if (checked === TOTAL) {
+        card.classList.add('ready');
+        label.textContent = 'エントリー可能';
+        sub.textContent = '全条件クリア。エントリーしてください。';
+      } else if (checked > 0) {
+        card.classList.add('partial');
+        label.textContent = '確認中 — あと ' + (TOTAL - checked) + ' 項目';
+        sub.textContent = '残りの条件を確認してください。';
+      } else {
+        label.textContent = '条件を確認中';
+        sub.textContent = 'チェックリストをすべて確認してください。';
+      }
+    }
+
+    inputs.forEach(inp => {
+      inp.addEventListener('change', () => {
+        inp.closest('.cell').classList.toggle('checked', inp.checked);
+        update();
+      });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      inputs.forEach(inp => {
+        inp.checked = false;
+        inp.closest('.cell').classList.remove('checked');
+      });
+      update();
+    });
+
+    update();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,408 @@
+/* ====================================================
+   FX CHECKER — style.css  v2
+   Design: Dark terminal, 3x3 grid, mobile-first
+   ==================================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0D1117;
+  --surface:  #161B22;
+  --card:     #1C2230;
+  --border:   #2A3547;
+  --border2:  #30415A;
+
+  --text:     #E6EDF3;
+  --text2:    #8B9CB3;
+  --muted:    #4A5A70;
+
+  --green:    #00C48C;
+  --green-d:  rgba(0, 196, 140, 0.13);
+  --green-g:  rgba(0, 196, 140, 0.35);
+  --amber:    #F0B429;
+  --amber-d:  rgba(240, 180, 41, 0.15);
+
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --body: 'Inter', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  --r: 8px;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Header ---- */
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--text);
+}
+
+.logo-fx {
+  color: var(--green);
+}
+
+.clock {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text2);
+  background: var(--card);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* ---- Main ---- */
+.main {
+  flex: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 20px 16px 48px;
+}
+
+/* ---- Status Card ---- */
+.status-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.status-card.partial {
+  border-color: var(--amber);
+  box-shadow: 0 0 20px var(--amber-d);
+}
+
+.status-card.ready {
+  border-color: var(--green);
+  box-shadow: 0 0 28px var(--green-g);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 20px var(--green-g); }
+  50%       { box-shadow: 0 0 40px var(--green-g); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-card.ready { animation: none; }
+}
+
+/* ステータスアイコン */
+.status-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.status-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.icon-check { display: none; }
+.icon-x     { display: block; }
+
+.status-card.ready .status-icon   { color: var(--green); background: var(--green-d); border-color: var(--green); }
+.status-card.partial .status-icon { color: var(--amber); background: var(--amber-d); border-color: var(--amber); }
+.status-card.ready .icon-check    { display: block; }
+.status-card.ready .icon-x        { display: none; }
+.status-card.partial .icon-check  { display: block; }
+.status-card.partial .icon-x      { display: none; }
+
+/* ステータステキスト */
+.status-body { flex: 1; min-width: 0; }
+
+.status-label {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-card.ready .status-label { color: var(--green); }
+
+.status-sub {
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+/* カウンター */
+.status-counter {
+  font-family: var(--mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.status-counter span:first-child {
+  color: var(--text);
+  transition: color 0.2s;
+}
+
+.status-card.ready .status-counter span:first-child { color: var(--green); }
+
+.sep { font-size: 1.1rem; }
+
+/* プログレスバー */
+.progress-wrap {
+  height: 3px;
+  background: var(--card);
+  border-radius: 2px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--green), #00E5A4);
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---- 3×3 グリッド ---- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* チェックセル */
+.cell {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  display: block;
+  min-height: 110px;
+  transition: border-color 0.18s, background 0.18s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cell:hover { border-color: var(--border2); }
+
+.cell.checked {
+  background: var(--green-d);
+  border-color: var(--green);
+}
+
+.cb {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.cell-body {
+  padding: 12px 10px;
+  height: 100%;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cell-num {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+.cell.checked .cell-num { color: var(--green); }
+
+.cell-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text2);
+  line-height: 1.45;
+  flex: 1;
+}
+
+.cell.checked .cell-text { color: var(--text); }
+
+/* チェックマーク丸 */
+.cell-mark {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: transparent;
+  transition: all 0.18s;
+  align-self: flex-end;
+  margin-top: 4px;
+}
+
+.cell.checked .cell-mark {
+  background: var(--green);
+  border-color: var(--green);
+  color: #0D1117;
+}
+
+/* ---- リセットボタン ---- */
+.reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text2);
+  font-family: var(--body);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.reset-btn:hover {
+  background: var(--card);
+  color: var(--text);
+  border-color: var(--border2);
+}
+
+.reset-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---- モバイル対応 ---- */
+@media (max-width: 480px) {
+  .main {
+    padding: 16px 12px 40px;
+  }
+
+  .status-card {
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .status-label {
+    font-size: 0.85rem;
+  }
+
+  .status-sub {
+    font-size: 0.72rem;
+  }
+
+  .status-counter {
+    font-size: 1.5rem;
+  }
+
+  .status-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .status-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .grid {
+    gap: 8px;
+  }
+
+  .cell {
+    min-height: 96px;
+  }
+
+  .cell-body {
+    padding: 10px 8px;
+    min-height: 96px;
+  }
+
+  .cell-text {
+    font-size: 0.78rem;
+  }
+
+  .cell-num {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .cell {
+    min-height: 84px;
+  }
+
+  .cell-body {
+    padding: 8px 6px;
+    min-height: 84px;
+  }
+
+  .cell-text {
+    font-size: 0.7rem;
+  }
+
+  .cell-mark {
+    width: 16px;
+    height: 16px;
+    font-size: 0.55rem;
+  }
+}
